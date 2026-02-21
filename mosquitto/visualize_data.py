@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 
-df = pd.read_csv("sensor.csv")
+df = pd.read_csv("pump_sensor_subset.csv")
 df['timestamp'] = pd.to_datetime(df['timestamp'])
 
 sensors = {
@@ -21,5 +21,5 @@ for group, cols in sensors.items():
     plt.legend()
     plt.tight_layout()
     # Guardar como imagen
-    plt.savefig(f"{group}_sensors.png")
+    plt.savefig(f"{group}_sensors_subset.png")
     plt.close()
