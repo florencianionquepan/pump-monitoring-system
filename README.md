@@ -14,7 +14,12 @@ El proyecto simula el flujo de datos de un PLC real: un script Python lee regist
 
 ```
 .
+├── Dockerfile.python           # Imagen Docker del publicador Python
+├── Dockerfile.springboot       # Imagen Docker del servicio Spring Boot
+├── docker-compose.yml          # Orquestación de los tres servicios
 ├── mosquitto/                  # Script Python y datos de sensores
+│   ├── mosquitto.conf          # Configuración del broker MQTT
+│   ├── requirements.txt        # Dependencias Python
 │   ├── send_data.py            # Publica datos del CSV al broker MQTT
 │   ├── create_csv.py           # Genera el subset de datos
 │   ├── visualize_data.py       # Visualización exploratoria del dataset
@@ -63,6 +68,7 @@ El patrón Observer desacopla completamente la recepción de mensajes MQTT de su
 | Backend | Java 17 + Spring Boot |
 | Publicador de datos | Python 3 |
 | Comunicación | MQTT (tcp://localhost:1883) |
+| Contenedores | Docker + Docker Compose |
 
 ---
 
@@ -72,27 +78,28 @@ Los datos de sensores utilizados en este proyecto provienen del dataset público
 
 ---
 
-> El script lee `pump_sensor_subset.csv` y publica cada fila como un mensaje JSON en el topic `scada/pump/data`.
-
----
-
 ## Modelo de datos
 
 Cada mensaje publicado tiene la siguiente estructura JSON:
 
 ```json
 {
-  "timestamp": "2024-01-15T10:30:00",
+  "timestamp": "2018-04-01 00:00:00",
   "motor": {
-    "rpm": 1450.0,
-    "temperatura": 72.3
+    "speed_rpm": 1450.0,
+    "current_a": 32.1,
+    "active_power_kw": 12.4
   },
   "pump": {
-    "presion": 4.2,
-    "caudal": 38.5
+    "inlet_flow_m3h": 98.2,
+    "discharge_flow_m3h": 95.7,
+    "inlet_pressure_bar": 2.1,
+    "discharge_pressure_bar": 4.8
   },
   "condition": {
-    "vibracion": 0.12
+    "motor_vibration_mm_s": 0.45,
+    "pump_vibration_mm_s": 0.38,
+    "thrust_bearing_temp_c": 62.3
   },
   "status": "NORMAL"
 }
@@ -100,8 +107,35 @@ Cada mensaje publicado tiene la siguiente estructura JSON:
 
 ---
 
+## Cómo levantar el proyecto
+
+### Con Docker
+
+Requiere Docker y Docker Compose instalados.
+
+```bash
+# clonar el repositorio
+git clone https://github.com/florencianionquepan/pump-monitoring-system.git
+cd pump-monitoring-system
+
+# levantar todos los servicios
+docker-compose up --build
+```
+
+Los servicios arrancan en orden automáticamente:
+1. **mqtt-broker** — Eclipse Mosquitto en el puerto 1883
+2. **pump-data-service** — Spring Boot en el puerto 8080
+3. **pump-publisher** — script Python que empieza a publicar datos
+
+Para detener:
+```bash
+docker-compose down
+```
+
+---
+
 ## Próximos pasos
 
 - [ ] Persistencia en base de datos (PostgreSQL)
-- [ ] Notificaciones
-- [ ] Dockerización de todos los componentes
+- [ ] Notificaciones por Telegram y WhatsApp
+- [ ] Dashboard de monitoreo en tiempo real
