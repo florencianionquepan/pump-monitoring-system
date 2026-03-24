@@ -2,10 +2,11 @@ import pandas as pd
 import time
 import json
 import paho.mqtt.client as mqtt
+import os
 
-broker = "localhost"   # usar "mqtt" solo si estás en docker-compose
-port = 1883
-topic = "scada/pump/data"
+broker = os.getenv("MQTT_BROKER", "localhost")
+port = int(os.getenv("MQTT_PORT", 1883))
+topic = os.getenv("MQTT_TOPIC", "scada/pump/data")
 
 df = pd.read_csv("sensor.csv")
 
