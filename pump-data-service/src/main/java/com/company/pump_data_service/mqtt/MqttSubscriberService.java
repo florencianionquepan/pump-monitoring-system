@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MqttSubscriberService implements InitializingBean, DisposableBean {
 
-    @Value("${mqtt.topic:scada/pump/data}")
+    @Value("${mqtt.topic:plc/pump/data}")
     private String topic;
 
     private final MqttClient mqttClient;

@@ -22,8 +22,8 @@ services:
       - "8080:8080"
     environment:
       - MQTT_BROKER=tcp://mqtt:1883
-      - MQTT_TOPIC=scada/pump/data
-      - MQTT_CLIENT_ID=scada-springboot
+      - MQTT_TOPIC=plc/pump/data
+      - MQTT_CLIENT_ID=plc-springboot
     depends_on:
       mqtt:
         condition: service_healthy

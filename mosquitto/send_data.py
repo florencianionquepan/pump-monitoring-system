@@ -6,7 +6,7 @@ import os
 
 broker = os.getenv("MQTT_BROKER", "localhost")
 port = int(os.getenv("MQTT_PORT", 1883))
-topic = os.getenv("MQTT_TOPIC", "scada/pump/data")
+topic = os.getenv("MQTT_TOPIC", "plc/pump/data")
 
 df = pd.read_csv("sensor.csv")
 
